@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
 
-part 'model.g.dart';
+part 'expense.g.dart';
 
 @Collection()
 class Expense {
@@ -12,5 +12,7 @@ class Expense {
 
   final DateTime date;
 
-  Expense({required this.title, required this.amount, required this.date});
+  final String category;
+
+  Expense({required this.title, required this.amount, required this.date, required this.category});
 }

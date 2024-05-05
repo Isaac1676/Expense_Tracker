@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'model.dart';
+part of 'expense.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -22,13 +22,18 @@ const ExpenseSchema = CollectionSchema(
       name: r'amount',
       type: IsarType.double,
     ),
-    r'date': PropertySchema(
+    r'category': PropertySchema(
       id: 1,
+      name: r'category',
+      type: IsarType.string,
+    ),
+    r'date': PropertySchema(
+      id: 2,
       name: r'date',
       type: IsarType.dateTime,
     ),
     r'title': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'title',
       type: IsarType.string,
     )
@@ -53,6 +58,7 @@ int _expenseEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.category.length * 3;
   bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
@@ -64,8 +70,9 @@ void _expenseSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDouble(offsets[0], object.amount);
-  writer.writeDateTime(offsets[1], object.date);
-  writer.writeString(offsets[2], object.title);
+  writer.writeString(offsets[1], object.category);
+  writer.writeDateTime(offsets[2], object.date);
+  writer.writeString(offsets[3], object.title);
 }
 
 Expense _expenseDeserialize(
@@ -76,8 +83,9 @@ Expense _expenseDeserialize(
 ) {
   final object = Expense(
     amount: reader.readDouble(offsets[0]),
-    date: reader.readDateTime(offsets[1]),
-    title: reader.readString(offsets[2]),
+    category: reader.readString(offsets[1]),
+    date: reader.readDateTime(offsets[2]),
+    title: reader.readString(offsets[3]),
   );
   return object;
 }
@@ -92,8 +100,10 @@ P _expenseDeserializeProp<P>(
     case 0:
       return (reader.readDouble(offset)) as P;
     case 1:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 2:
+      return (reader.readDateTime(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -245,6 +255,136 @@ extension ExpenseQueryFilter
         upper: upper,
         includeUpper: includeUpper,
         epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'category',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'category',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'category',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> categoryIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'category',
+        value: '',
       ));
     });
   }
@@ -504,6 +644,18 @@ extension ExpenseQuerySortBy on QueryBuilder<Expense, Expense, QSortBy> {
     });
   }
 
+  QueryBuilder<Expense, Expense, QAfterSortBy> sortByCategory() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'category', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterSortBy> sortByCategoryDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'category', Sort.desc);
+    });
+  }
+
   QueryBuilder<Expense, Expense, QAfterSortBy> sortByDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'date', Sort.asc);
@@ -540,6 +692,18 @@ extension ExpenseQuerySortThenBy
   QueryBuilder<Expense, Expense, QAfterSortBy> thenByAmountDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'amount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterSortBy> thenByCategory() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'category', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Expense, Expense, QAfterSortBy> thenByCategoryDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'category', Sort.desc);
     });
   }
 
@@ -588,6 +752,13 @@ extension ExpenseQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Expense, Expense, QDistinct> distinctByCategory(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'category', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Expense, Expense, QDistinct> distinctByDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'date');
@@ -613,6 +784,12 @@ extension ExpenseQueryProperty
   QueryBuilder<Expense, double, QQueryOperations> amountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'amount');
+    });
+  }
+
+  QueryBuilder<Expense, String, QQueryOperations> categoryProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'category');
     });
   }
 
