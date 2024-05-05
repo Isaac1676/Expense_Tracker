@@ -17,7 +17,16 @@ class ThemeProvider with ChangeNotifier {
     if (_themeData == lightMode) {
       _themeData = darkMode;
     } else {
-      _themeData == lightMode;
+      _themeData = lightMode;
+    }
+    notifyListeners();
+  }
+
+  Widget icon() {
+    if (_themeData == lightMode) {
+      return const Icon(Icons.dark_mode_rounded);
+    } else {
+      return const Icon(Icons.light_mode_rounded);
     }
   }
 }

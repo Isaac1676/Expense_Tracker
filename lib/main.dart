@@ -1,10 +1,29 @@
+import 'package:expense_tracker/database/database.dart';
 import 'package:expense_tracker/pages/home_view.dart';
 import 'package:expense_tracker/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await ExpenseDatabase.initialize();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        //theme provider
+        ChangeNotifierProvider(
+          create: (context) => ThemeProvider(),
+        ),
+
+        //birthday provider
+        ChangeNotifierProvider(
+          create: (context) => ExpenseDatabase(),
+        )
+      ],
+      child: const MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
