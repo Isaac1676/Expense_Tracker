@@ -10,13 +10,20 @@ class ExpenseDatabase extends ChangeNotifier {
   // INITIALIZE A DATABASE
   static Future<void> initialize() async {
     final dir = await getApplicationDocumentsDirectory();
-    isar = await Isar.open([ExpenseSchema, CategorySchema], directory: dir.path);
+    isar =
+        await Isar.open([ExpenseSchema, CategorySchema], directory: dir.path);
   }
 
   final List<Expense> expenses = [];
+  final List<Expense> filterExpenses = [];
+  final List<String> categoryName = [];
   final List<Category> categorys = [];
 
   /*  CREATE METHODS */
+  Future<void> addValue(String name) async {
+    categoryName.add(name);
+    await categorieName();
+  }
 
   // CREATE - ADD A NEW EXPENSE
   Future<void> addExpense(Expense expense) async {
@@ -36,9 +43,35 @@ class ExpenseDatabase extends ChangeNotifier {
 
   // READ - SEE MY EXPENSE
   Future<void> fetchExpenses() async {
+    List<Expense> fetchedExpense = await isar.expenses.where().findAll();
+    expenses.clear();
+    expenses.addAll(fetchedExpense);
+    notifyListeners();
+  }
+
+  // READ - SEE MY EXPENSE
+  Future<void> fetchedExpenses(String name) async {
     List<Expense> fetchedBirth = await isar.expenses.where().findAll();
     expenses.clear();
     expenses.addAll(fetchedBirth);
+    filterExpenses.clear();
+    for (var exp in expenses) {
+      if (exp.category == name) {
+        filterExpenses.add(exp);
+        notifyListeners();
+      }
+    }
+    notifyListeners();
+  }
+
+  Future<void> categorieName() async {
+    List<Category> fetchedBirth = await isar.categorys.where().findAll();
+    categorys.clear();
+    categorys.addAll(fetchedBirth);
+    for (var exp in categorys) {
+      categoryName.add(exp.name);
+      notifyListeners();
+    }
     notifyListeners();
   }
 
@@ -48,6 +81,15 @@ class ExpenseDatabase extends ChangeNotifier {
     categorys.clear();
     categorys.addAll(fetchedCategory);
     notifyListeners();
+  }
+
+  /*  UPDATE METHODS */
+  Future<void> updateExpense(int id, Expense updatedExpense) async {
+    updatedExpense.id = id;
+
+    await isar.writeTxn(() => isar.expenses.put(updatedExpense));
+
+    await fetchExpenses();
   }
 
   /*  DELETE METHODS */
@@ -61,20 +103,20 @@ class ExpenseDatabase extends ChangeNotifier {
   // DELETE - DELETE A CATEGORY
   Future<void> deleteCategory(int id) async {
     await isar.writeTxn(() => isar.categorys.delete(id));
-    await fetchExpenses();
+    await fetchCategorys();
   }
 
   /*  SEARCH METHODS */
 
-  // SEARCH - SEARCH CATEGORY BY NAME
+  // SEARCH - SEARCH EXPENSE BY NAME
   Future<void> searchExpense(String searchTerm) async {
-    final searchResults = await isar.categorys
+    final searchResults = await isar.expenses
         .where()
         .filter()
         .nameContains(searchTerm)
         .findAll();
-    categorys.clear();
-    categorys.addAll(searchResults);
+    expenses.clear();
+    expenses.addAll(searchResults);
     notifyListeners();
   }
 }

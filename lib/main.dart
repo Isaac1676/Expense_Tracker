@@ -1,5 +1,5 @@
 import 'package:expense_tracker/database/database.dart';
-import 'package:expense_tracker/pages/home_view.dart';
+import 'package:expense_tracker/pages/home_page.dart';
 import 'package:expense_tracker/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,10 +16,10 @@ void main() async {
           create: (context) => ThemeProvider(),
         ),
 
-        //birthday provider
+        //expense provider
         ChangeNotifierProvider(
           create: (context) => ExpenseDatabase(),
-        )
+        ),
       ],
       child: const MyApp(),
     )
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const ExpenseView(),
+      home: const HomePage(),
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
   }

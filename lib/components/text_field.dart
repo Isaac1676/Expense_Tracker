@@ -25,7 +25,7 @@ class Textfield extends StatelessWidget {
           cursorColor: Theme.of(context).colorScheme.primary,
           onChanged: onChanged,
           style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.inversePrimary,
               fontFamily: "Poppins"),
           decoration: InputDecoration(
             filled: true,
@@ -48,12 +48,14 @@ class Textfield extends StatelessWidget {
 
 class MyTextField extends StatelessWidget {
   final String hintText;
+  final bool isPhone;
   final TextEditingController controller;
 
   const MyTextField({
     super.key,
     required this.hintText,
     required this.controller,
+    required this.isPhone
   });
 
   @override
@@ -64,6 +66,7 @@ class MyTextField extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
       child: TextField(
         controller: controller,
+        keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
         style: TextStyle(
             color: Theme.of(context).colorScheme.inversePrimary,
             fontFamily: "Poppins"),

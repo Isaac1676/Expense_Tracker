@@ -1,10 +1,9 @@
-import 'package:expense_tracker/components/bottom_bar.dart';
 import 'package:expense_tracker/components/list_tile.dart';
 import 'package:expense_tracker/components/text_field.dart';
 import 'package:expense_tracker/database/database.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/pages/expense_view.dart';
-import 'package:expense_tracker/theme/theme_provider.dart';
+import 'package:expense_tracker/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +15,16 @@ class ExpenseView extends StatefulWidget {
 }
 
 class _ExpenseViewState extends State<ExpenseView> {
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ExpenseDatabase>().fetchExpenses();
+    });
+  }
+
   void openDeleteBox(Expense child) {
     showDialog(
       context: context,
@@ -29,51 +38,25 @@ class _ExpenseViewState extends State<ExpenseView> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ExpenseDatabase>().fetchExpenses();
-    });
+  void performSearch(String searchTerm) {
+  if (searchTerm.isEmpty) {
+    context.read<ExpenseDatabase>().fetchExpenses();
+  } else {
+    context.read<ExpenseDatabase>().searchExpense(searchTerm);
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-
     final expDatabase = context.watch<ExpenseDatabase>();
-    final currentExpense = [
-      Expense(
-          title: "title",
-          amount: 200,
-          date: DateTime.now(),
-          category: "category")
-    ];
+    final currentExpense = expDatabase.expenses;
 
     //getting heigth and width
     final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(
-          centerTitle: true,
-          elevation: 0,
-          title: Text(
-            "D E P E N S E S",
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.inversePrimary,
-                fontSize: screenWidth * 0.05,
-                fontFamily: "Poppins",
-                fontWeight: FontWeight.w600),
-          ),
-          leading: IconButton(
-              onPressed: () => themeProvider.toogleTheme(),
-              icon: themeProvider.icon())),
-      bottomNavigationBar: const BottomBar(
-        isHome: true,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         elevation: 0,
         foregroundColor: Theme.of(context).colorScheme.tertiary,
@@ -95,7 +78,8 @@ class _ExpenseViewState extends State<ExpenseView> {
           ),
 
           // CHAMP DE RECHERCHE
-          Textfield(controller: TextEditingController(), onChanged: (value) {}),
+          Textfield(controller: searchController, onChanged: performSearch),
+
 
           // SEE MY EXPENSE
           Expanded(
@@ -103,10 +87,14 @@ class _ExpenseViewState extends State<ExpenseView> {
                   itemCount: currentExpense.length,
                   itemBuilder: (context, index) {
                     final expense = currentExpense[index];
+                    final subtitle =
+                        "${formatDate(expense.date)} | ${expense.category}";
+                    final amount = intToString(expense.amount);
                     return MyListile(
-                        title: "title",
-                        subtitle: "subtitle",
-                        amount: "amount",
+                        title: expense.name,
+                        subtitle: subtitle,
+                        amount: amount,
+                        onEditPressed: (p0) {},
                         onDelPressed: (p0) => openDeleteBox(expense));
                   }))
         ],
@@ -116,16 +104,12 @@ class _ExpenseViewState extends State<ExpenseView> {
 
   Widget _deleteButton(int id) {
     return MaterialButton(
-      onPressed: () async {
+      onPressed: ()  {
         Navigator.pop(context);
-        try {
-          await context.read<ExpenseDatabase>().deleteExpense(id);
-        } catch (error) {
-          print(error);
-          // Handle the error appropriately (e.g., show a snackbar)
-        }
+        context.read<ExpenseDatabase>().deleteExpense(id);
+        print("object");
       },
-      child: const Text("Delete"),
+      child: const Text("Supprimer"),
     );
   }
 

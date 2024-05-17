@@ -5,6 +5,7 @@ class MyListile extends StatelessWidget {
   final String title;
   final String subtitle;
   final String amount;
+  final void Function(BuildContext)? onEditPressed;
   final void Function(BuildContext)? onDelPressed;
 
   const MyListile({
@@ -12,6 +13,7 @@ class MyListile extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.amount,
+    required this.onEditPressed,
     required this.onDelPressed,
   });
 
@@ -20,11 +22,16 @@ class MyListile extends StatelessWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: screenWidth * 0.02),
       child: Slidable(
         endActionPane: ActionPane(
           motion: const StretchMotion(),
           children: [
+            SlidableAction(
+              onPressed: onEditPressed,
+              backgroundColor: Colors.grey.shade700,
+              icon: Icons.mode_edit_rounded,
+            ),
             SlidableAction(
               onPressed: onDelPressed,
               backgroundColor: Colors.red,
@@ -52,7 +59,8 @@ class MyListile extends StatelessWidget {
               style: TextStyle(
                   color: Theme.of(context).colorScheme.inversePrimary,
                   fontFamily: "Poppins",
-                  fontWeight: FontWeight.w600)),
+                  fontSize: screenWidth * 0.04,
+                  fontWeight: FontWeight.w700)),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),

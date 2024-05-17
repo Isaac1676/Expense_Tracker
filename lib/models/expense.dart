@@ -4,9 +4,9 @@ part 'expense.g.dart';
 
 @Collection()
 class Expense {
-  final Id id = Isar.autoIncrement;
+  Id id = Isar.autoIncrement;
 
-  final String title;
+  final String name;
 
   final double amount;
 
@@ -14,5 +14,5 @@ class Expense {
 
   final String category;
 
-  Expense({required this.title, required this.amount, required this.date, required this.category});
+  Expense({required this.name, required this.amount, required this.date, required this.category});
 }

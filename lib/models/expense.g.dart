@@ -32,9 +32,9 @@ const ExpenseSchema = CollectionSchema(
       name: r'date',
       type: IsarType.dateTime,
     ),
-    r'title': PropertySchema(
+    r'name': PropertySchema(
       id: 3,
-      name: r'title',
+      name: r'name',
       type: IsarType.string,
     )
   },
@@ -59,7 +59,7 @@ int _expenseEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.category.length * 3;
-  bytesCount += 3 + object.title.length * 3;
+  bytesCount += 3 + object.name.length * 3;
   return bytesCount;
 }
 
@@ -72,7 +72,7 @@ void _expenseSerialize(
   writer.writeDouble(offsets[0], object.amount);
   writer.writeString(offsets[1], object.category);
   writer.writeDateTime(offsets[2], object.date);
-  writer.writeString(offsets[3], object.title);
+  writer.writeString(offsets[3], object.name);
 }
 
 Expense _expenseDeserialize(
@@ -85,8 +85,9 @@ Expense _expenseDeserialize(
     amount: reader.readDouble(offsets[0]),
     category: reader.readString(offsets[1]),
     date: reader.readDateTime(offsets[2]),
-    title: reader.readString(offsets[3]),
+    name: reader.readString(offsets[3]),
   );
+  object.id = id;
   return object;
 }
 
@@ -118,7 +119,9 @@ List<IsarLinkBase<dynamic>> _expenseGetLinks(Expense object) {
   return [];
 }
 
-void _expenseAttach(IsarCollection<dynamic> col, Id id, Expense object) {}
+void _expenseAttach(IsarCollection<dynamic> col, Id id, Expense object) {
+  object.id = id;
+}
 
 extension ExpenseQueryWhereSort on QueryBuilder<Expense, Expense, QWhere> {
   QueryBuilder<Expense, Expense, QAfterWhere> anyId() {
@@ -494,20 +497,20 @@ extension ExpenseQueryFilter
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> titleEqualTo(
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'title',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> titleGreaterThan(
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> nameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -515,14 +518,14 @@ extension ExpenseQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'title',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> titleLessThan(
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> nameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -530,14 +533,14 @@ extension ExpenseQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'title',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> titleBetween(
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -546,7 +549,7 @@ extension ExpenseQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'title',
+        property: r'name',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -556,69 +559,69 @@ extension ExpenseQueryFilter
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> titleStartsWith(
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'title',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> titleEndsWith(
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'title',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> titleContains(
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> nameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'title',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> titleMatches(
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'title',
+        property: r'name',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> titleIsEmpty() {
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'title',
+        property: r'name',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> titleIsNotEmpty() {
+  QueryBuilder<Expense, Expense, QAfterFilterCondition> nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'title',
+        property: r'name',
         value: '',
       ));
     });
@@ -668,15 +671,15 @@ extension ExpenseQuerySortBy on QueryBuilder<Expense, Expense, QSortBy> {
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterSortBy> sortByTitle() {
+  QueryBuilder<Expense, Expense, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'title', Sort.asc);
+      return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterSortBy> sortByTitleDesc() {
+  QueryBuilder<Expense, Expense, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'title', Sort.desc);
+      return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
@@ -731,15 +734,15 @@ extension ExpenseQuerySortThenBy
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterSortBy> thenByTitle() {
+  QueryBuilder<Expense, Expense, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'title', Sort.asc);
+      return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterSortBy> thenByTitleDesc() {
+  QueryBuilder<Expense, Expense, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'title', Sort.desc);
+      return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
@@ -765,10 +768,10 @@ extension ExpenseQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Expense, Expense, QDistinct> distinctByTitle(
+  QueryBuilder<Expense, Expense, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'title', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
     });
   }
 }
@@ -799,9 +802,9 @@ extension ExpenseQueryProperty
     });
   }
 
-  QueryBuilder<Expense, String, QQueryOperations> titleProperty() {
+  QueryBuilder<Expense, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'title');
+      return query.addPropertyName(r'name');
     });
   }
 }
